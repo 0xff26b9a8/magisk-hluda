@@ -1,11 +1,11 @@
 #!/user/bin/env python3
 #
-# MagiskFrida build process
+# MagiskHluda build process
 #
-# 1. Checks if project has a tag that matches frida tag
+# 1. Checks if project has a tag that matches hluda tag
 #    Yes -> continue
 #    No  -> must tag
-# 2. Checks if last commit doesn't have frida tag and is titled 'release'
+# 2. Checks if last commit doesn't have hluda tag and is titled 'release'
 #    Yes -> must tag
 #    No  -> continue
 # If tagging, writes new tag to 'NEW_TAG.txt' and builds
@@ -20,16 +20,16 @@ import util
 
 
 def main():
-    last_frida_tag = util.get_last_frida_tag()
+    last_hluda_tag = util.get_last_hluda_tag()
     last_project_tag = util.get_last_project_tag()
     last_commit_tag = util.get_last_commit_tag()
     new_project_tag = "0"
 
-    if last_frida_tag != util.strip_revision(last_project_tag) \
-        or (last_frida_tag != util.strip_revision(last_commit_tag)
+    if last_hluda_tag != util.strip_revision(last_project_tag) \
+        or (last_hluda_tag != util.strip_revision(last_commit_tag)
             and util.get_commit_message().lower() == "release"):
 
-        new_project_tag = util.get_next_revision(last_frida_tag)
+        new_project_tag = util.get_next_revision(last_hluda_tag)
         print(f"Update needed to {new_project_tag}")
 
         # for use by deployment
@@ -38,7 +38,7 @@ def main():
     else:
         print("All good!")
 
-    build.do_build(last_frida_tag, new_project_tag)
+    build.do_build(last_hluda_tag, new_project_tag)
 
 
 if __name__ == "__main__":
