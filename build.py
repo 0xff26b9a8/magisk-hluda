@@ -53,13 +53,13 @@ def extract_file(archive_path: Path, dest_path: Path):
 
 
 def create_module_prop(path: Path, project_tag: str):
-    module_prop = f"""id=magisk-frida
-name=MagiskFrida
+    module_prop = f"""id=magisk-hluda
+name=MagiskHluda
 version={project_tag}
 versionCode={project_tag.replace(".", "").replace("-", "")}
-author=ViRb3
-description=Run frida-server on boot
-updateJson=https://github.com/ViRb3/magisk-frida/releases/latest/download/updater.json"""
+author=StimeKe
+description=Run hluda-server on boot
+updateJson=https://github.com/StimeKe/magisk-hluda/releases/latest/download/updater.json"""
 
     with open(path.joinpath("module.prop"), "w", newline="\n") as f:
         f.write(module_prop)
@@ -75,18 +75,18 @@ def create_module(project_tag: str):
     create_module_prop(PATH_BUILD_TMP, project_tag)
 
 
-def fill_module(arch: str, frida_tag: str, project_tag: str):
+def fill_module(arch: str, hluda_tag: str, project_tag: str):
     threading.current_thread().setName(arch)
     logger.info(f"Filling module for arch '{arch}'")
 
-    frida_download_url = f"https://github.com/frida/frida/releases/download/{frida_tag}/"
-    frida_server = f"frida-server-{frida_tag}-android-{arch}.xz"
-    frida_server_path = PATH_DOWNLOADS.joinpath(frida_server)
+    hluda_download_url = f"https://github.com/StimeKe/strongR-frida-android/releases/download/{hluda_tag}/"
+    hluda_server = f"hluda-server-{hluda_tag}-android-{arch}.xz"
+    hluda_server_path = PATH_DOWNLOADS.joinpath(hluda_server)
 
-    download_file(frida_download_url + frida_server, frida_server_path)
+    download_file(hluda_download_url + hluda_server, hluda_server_path)
     files_dir = PATH_BUILD_TMP.joinpath("files")
     files_dir.mkdir(exist_ok=True)
-    extract_file(frida_server_path, files_dir.joinpath(f"frida-server-{arch}"))
+    extract_file(hluda_server_path, files_dir.joinpath(f"hluda-server-{arch}"))
 
 
 def create_updater_json(project_tag: str):
@@ -95,8 +95,8 @@ def create_updater_json(project_tag: str):
     updater ={
         "version": project_tag,
         "versionCode": int(project_tag.replace(".", "").replace("-", "")),
-        "zipUrl": f"https://github.com/ViRb3/magisk-frida/releases/download/{project_tag}/MagiskFrida-{project_tag}.zip",
-        "changelog": "https://raw.githubusercontent.com/ViRb3/magisk-frida/master/CHANGELOG.md"
+        "zipUrl": f"https://github.com/StimeKe/magisk-hluda/releases/download/{project_tag}/MagiskHluda-{project_tag}.zip",
+        "changelog": "https://raw.githubusercontent.com/StimeKe/magisk-hluda/master/CHANGELOG.md"
     }
 
     with open(PATH_BUILD.joinpath("updater.json"), "w", newline="\n") as f:
@@ -105,7 +105,7 @@ def create_updater_json(project_tag: str):
 def package_module(project_tag: str):
     logger.info("Packaging module")
 
-    module_zip = PATH_BUILD.joinpath(f"MagiskFrida-{project_tag}.zip")
+    module_zip = PATH_BUILD.joinpath(f"MagiskHluda-{project_tag}.zip")
 
     with zipfile.ZipFile(module_zip, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for root, _, files in os.walk(PATH_BUILD_TMP):
@@ -118,7 +118,7 @@ def package_module(project_tag: str):
     shutil.rmtree(PATH_BUILD_TMP)
 
 
-def do_build(frida_tag: str, project_tag: str):
+def do_build(hluda_tag: str, project_tag: str):
     PATH_DOWNLOADS.mkdir(parents=True, exist_ok=True)
     PATH_BUILD.mkdir(parents=True, exist_ok=True)
 
@@ -126,7 +126,7 @@ def do_build(frida_tag: str, project_tag: str):
 
     archs = ["arm", "arm64", "x86", "x86_64"]
     executor = concurrent.futures.ProcessPoolExecutor()
-    futures = [executor.submit(fill_module, arch, frida_tag, project_tag)
+    futures = [executor.submit(fill_module, arch, hluda_tag, project_tag)
                for arch in archs]
     for future in concurrent.futures.as_completed(futures):
         if future.exception() is not None:
