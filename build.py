@@ -79,7 +79,7 @@ def fill_module(arch: str, hluda_tag: str, project_tag: str):
     threading.current_thread().setName(arch)
     logger.info(f"Filling module for arch '{arch}'")
 
-    hluda_download_url = f"https://github.com/StimeKe/strongR-frida-android/releases/download/{hluda_tag}/"
+    hluda_download_url = f"https://github.com/Ylarod/Florida/releases/download/{hluda_tag}/"
     hluda_server = f"hluda-server-{hluda_tag}-android-{arch}.xz"
     hluda_server_path = PATH_DOWNLOADS.joinpath(hluda_server)
 
